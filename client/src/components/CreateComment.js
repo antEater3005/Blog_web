@@ -46,19 +46,28 @@ import { useState } from 'react';
 import axios from 'axios';
 
 function CreateComment({ id }) {
-  const [comment, setComments] = useState(''); 
+  const [comment, setComments] = useState('');
   const submit = () => {
     if (comment === '') {
       alert('Comment cannot be empty...');
       return;
-    } 
+    }
     axios
-      .post('http://localhost:3001/comments', {
-        CommentBody: comment,
-        PostId: id,
-      })
+      .post(
+        'http://localhost:3001/comments',
+        {
+          CommentBody: comment,
+          PostId: id, 
+        },
+        {
+          headers: {
+            accessToken: localStorage.getItem('accessToken'),
+          },
+        }
+      )
       .then((response) => {
-        window.location.reload(false);
+        if (response.data.error) alert(response.data.error);
+        else window.location.reload(false);
       });
   };
 

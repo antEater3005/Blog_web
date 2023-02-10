@@ -136,6 +136,8 @@ span {
   justify-content: space-between;
   flex-wrap: wrap;
 }
+
+/* comment-section */
 .comment-section {
   width: 600px;
   margin: 0;
@@ -175,9 +177,30 @@ h2 {
   margin-bottom: 3px;
   border-radius: 5px;
 }
+.comment-username {
+  color: blue;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px 3px;
+  border: 1px solid black;
+  border-radius: 3px;
+  background-color: antiquewhite;
+  width: fit-content;
+  margin-bottom: 3px;
+}
 
-.comment-single:hover {
+.comment-body {
+  margin-left: 5px;
+  padding-left: 5px;
+  font-size: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.233);
+}
+
+.comment-body:hover,
+.comment-username:hover {
   background-color: rgb(228, 204, 172);
+  cursor: pointer;
 }
 
 #input-comment {
@@ -230,8 +253,8 @@ h2 {
   text-align: left;
 }
 
-.login-form input { 
+.login-form input {
   border-radius: 4px;
-  border: 1px solid rgb(104, 97, 88) ;
+  border: 1px solid rgb(104, 97, 88);
   height: 20px;
 }

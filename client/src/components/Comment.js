@@ -12,7 +12,12 @@ function Comment({ id }) {
   return (
     <div>
       {comments.map((comment) => {
-        return <div key={comment.id} className='comment-single'>{comment.CommentBody}</div>;
+        return (
+          <div key={comment.id} className='comment-single'>
+            <div className='comment-username'>{comment.userName}</div>
+            <div className='comment-body'>{comment.CommentBody}</div>
+          </div>
+        );
       })}
     </div>
   );

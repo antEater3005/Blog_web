@@ -1,16 +1,28 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
-
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../Contexts/AuthContext';
 function Login() {
+  const navigate = useNavigate();
+
+  // Auth context
+  const { setAuthState } = useContext(AuthContext);
+
   const validationSchema = Yup.object().shape({
     userName: Yup.string().min(4).max(20).required('Username is required!'),
     Password: Yup.string().min(8).max(20).required('password is required!'),
   });
   const submit = (data, { resetForm }) => {
     axios.post('http://localhost:3001/auth/login', data).then((response) => {
-      alert(response.data.message);
+      if (response.data.error) alert(response.data.error);
+      else {
+        localStorage.setItem('accessToken', response.data.accessToken);
+        setAuthState(1);
+        alert(response.data.message);
+        navigate('/');
+      }
       resetForm();
     });
   };
