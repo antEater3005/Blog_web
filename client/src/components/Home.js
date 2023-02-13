@@ -24,7 +24,13 @@ function Home() {
           >
             <div className='title'> {value.title}</div>
             <div className='body'> {value.content}</div>
-            <div className='footer'> {value.author}</div>
+            <div className='footer'>
+              <div className='home-author'>{value.author}</div>
+              <div className='likes-wrapper'>
+                <div className='home-likes'>Likes:{value.likes}</div>
+                <div className='home-dislikes'>Dislikes:{value.dislikes}</div>
+              </div>
+            </div>
           </div>
         );
       })}

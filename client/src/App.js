@@ -9,6 +9,7 @@ import Register from './components/Register';
 import { AuthContext } from './Contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Profile from './components/Profile';
 
 function App() {
   const [authState, setAuthState] = useState(false);
@@ -41,6 +42,7 @@ function App() {
             <Route exact path='/post/:id' element={<Post />} />
             <Route exact path='/login' element={<Login />} />
             <Route exact path='/register' element={<Register />} />
+            <Route exact path='/profile' element={<Profile />} />
           </Routes>
         </Router>
       </AuthContext.Provider>

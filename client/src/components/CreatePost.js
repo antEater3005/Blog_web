@@ -8,20 +8,28 @@ function CreatePost() {
   const initialValues = {
     title: '',
     content: '',
-    author: '',
+    likes: 0,
   };
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     content: Yup.string().required('Body is required'),
-    author: Yup.string().min(3).max(20).required('Author is required'),
   });
 
   const onSubmit = (data) => {
-    axios.post('http://localhost:3001/posts', data).then((res) => {
-      alert('Post created successfully');
-      navigate('/');
-    });
+    axios
+      .post('http://localhost:3001/posts', data, {
+        headers: {
+          accessToken: localStorage.getItem('accessToken'),
+        },
+      })
+      .then((res) => {
+        if (res.data.error) alert(res.data.error);
+        else {
+          alert('Post created successfully');
+          navigate('/');
+        }
+      });
   };
   return (
     <div className='create-post'>
@@ -37,9 +45,6 @@ function CreatePost() {
           <label>Body:</label>
           <ErrorMessage name='content' component='span' />
           <Field id='inputCreatePost' name='content' placeholder='Body' />
-          <label>Author:</label>
-          <ErrorMessage name='author' component='span' />
-          <Field id='inputCreatePost' name='author' placeholder='Author' />
           <button type='submit'>Create Post</button>
         </Form>
       </Formik>

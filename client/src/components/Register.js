@@ -3,8 +3,9 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
 
-function Login() {
+function Register() {
   const validationSchema = Yup.object().shape({
+    name: Yup.string().min(4).max(20).required('Name is required!'),
     userName: Yup.string().min(4).max(20).required('Username is required!'),
     Password: Yup.string().min(8).max(20).required('Password is required!'),
     ConfirmPassword: Yup.string().when('Password', {
@@ -15,24 +16,37 @@ function Login() {
       ),
     }),
   });
+  const initialValues = {
+    userName: '',
+    Password: '',
+    ConfirmPassword: '',
+    name: '',
+    email: '',
+    image: '',
+  };
   const submit = (data, { resetForm }) => {
     axios.post('http://localhost:3001/auth/register', data).then((response) => {
       alert(response.data.message);
+      console.log(data.image);
+      console.log(response.data);
       resetForm();
     });
   };
   return (
     <div className='login-page'>
       <Formik
-        initialValues={{
-          userName: '',
-          Password: '',
-          ConfirmPassword: '',
-        }}
         onSubmit={submit}
         validationSchema={validationSchema}
+        initialValues={initialValues}
       >
         <Form className='login-form'>
+          <label>Name:</label>
+          <ErrorMessage
+            className='error-message'
+            name='name'
+            component={'span'}
+          />
+          <Field id='login-form-name' name='name' placeholder='Name' />
           <label>UserName:</label>
           <ErrorMessage
             className='error-message'
@@ -68,11 +82,30 @@ function Login() {
             placeholder='Confirm Password'
             type='password'
           />
-          <button type='submit'>Register</button>
+          <label id='login-form-email'>E-mail:</label>
+          <Field
+            id='register-form-email'
+            name='email'
+            type='email'
+            placeholder='Brad@xyz.com'
+          />
+          <label id='register-form-image'>Profile Pic:</label>
+          <Field
+            id='register-form-image'
+            name='image'
+            type='file'
+            accept='image/*'
+            // onChange={(e) => {
+            //   console.log(e.values.image)
+            // }}
+          />
+          <button type='submit' disabled={Formik.isSubmitting}>
+            Register
+          </button>
         </Form>
       </Formik>
     </div>
   );
 }
 
-export default Login;
+export default Register;

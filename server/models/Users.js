@@ -9,6 +9,19 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    image: {
+      type: DataTypes.BLOB('long'),
+    },
+    email: {
+      type: DataTypes.STRING,
+    },
+    createdAt: {
+      type: DataTypes.DATEONLY,
+    },
   });
 
   Users.associate = (models) => {

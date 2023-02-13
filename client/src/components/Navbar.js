@@ -1,9 +1,14 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../Contexts/AuthContext';
 function Navbar() {
-const {authState}=useContext(AuthContext)
-
+  const { authState, setAuthState } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.clear('accessToken');
+    setAuthState(false);
+    navigate('/');
+  };
   return (
     <div className='navbar'>
       <Link className='nav-links' to='/'>
@@ -19,8 +24,20 @@ const {authState}=useContext(AuthContext)
           </Link>
           <Link className='nav-links' to='/register'>
             Register
-          </Link>{' '}
+          </Link>
         </>
+      )}
+      {authState && (
+        <>
+          <button className='nav-logout-button' onClick={handleLogout}>
+            Logout
+          </button>
+        </>
+      )}
+      {authState && (
+        <Link className='profile-link' to='/profile'>
+          <img src='' alt='profile-pic' />
+        </Link>
       )}
     </div>
   );

@@ -6,10 +6,11 @@ const { sign } = require('jsonwebtoken');
 
 const { validateToken } = require('../middleWare/AuthMiddleWare');
 const { route } = require('./Comments');
+const { where } = require('sequelize');
 
 // register
 router.post('/register', async (req, res) => {
-  const { userName, Password } = req.body;
+  const { userName, Password, name, image, email } = req.body;
   const user = await Users.findOne({ where: { UserName: userName } });
   if (user) {
     res.json({ message: 'User already exists!' });
@@ -18,7 +19,13 @@ router.post('/register', async (req, res) => {
   bcrypt
     .hash(Password, 10)
     .then((hash) => {
-      Users.create({ userName: userName, Password: hash });
+      Users.create({
+        userName: userName,
+        Password: hash,
+        name: name,
+        email: email,
+        image: image,
+      });
       res.json({ message: 'Registered successfully!' });
     })
     .catch((error) => {
@@ -44,10 +51,9 @@ router.post('/login', async (req, res) => {
       }
 
       const accessToken = sign(
-        { userName: user.userName, id: user.id },
+        { userName: user.userName, id: user.id, image: user.image },
         'important_secret'
       );
-      console.log(accessToken);
       res.json({
         message: 'You logged in successfully!',
         accessToken: accessToken,
@@ -60,6 +66,20 @@ router.post('/login', async (req, res) => {
 
 router.get('/token-valid', validateToken, (req, res) => {
   res.json(req.user);
+});
+
+// get user profile data
+
+router.get('/user', validateToken, async (req, res) => {
+  const id = req.validToken.id;
+  const user = await Users.findOne({ where: { id: id } });
+  const data = {
+    userName: user.userName,
+    name: user.name,
+    join_date: user.createdAt,
+    image: user.image,
+  };
+  res.json(data);
 });
 
 module.exports = router;
