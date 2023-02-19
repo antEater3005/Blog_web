@@ -122,6 +122,27 @@ span {
   text-decoration: none;
 }
 
+.nav-logout-button {
+  height: 30px;
+  margin-left: 30px;
+}
+.profile-link {
+  color: black;
+  margin-left: 30px;
+}
+.profile-button {
+  font-size: smaller;
+  border-radius: 40px;
+  height: 30px;
+}
+
+#avatar-link {
+  border-radius: 20px;
+  width: 35px;
+}
+
+/* Posts */
+
 .single-post {
   border: 2px solid black;
   border-radius: 5px;
@@ -143,7 +164,7 @@ span {
 }
 #post-footer {
   color: rgb(0, 136, 52);
-  width: auto; 
+  width: auto;
   background-color: antiquewhite;
   padding: 5px;
   border-radius: 5px;
@@ -160,7 +181,6 @@ span {
   flex-wrap: wrap;
 }
 
- 
 /* comment-section */
 .comment-section {
   width: 600px;
@@ -210,7 +230,7 @@ h2 {
   border-radius: 3px;
   background-color: antiquewhite;
   width: fit-content;
-  margin-bottom: 3px;
+  margin-bottom: 10px;
 }
 
 .comment-body {
@@ -242,6 +262,27 @@ h2 {
 }
 .create-comment button:hover {
   cursor: pointer;
+}
+
+.comment-delete-button {
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  height: 20px;
+  border-radius: 5px;
+}
+#delete-comment {
+  width: 20px;
+}
+.comment-delete-button:hover {
+  background-color: #ff6868f3;
+  cursor: pointer;
+}
+.comment-head-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 30px;
 }
 
 /* Login form  */
@@ -303,8 +344,14 @@ h2 {
 .profile-image {
   border: 1px solid red;
   width: 200px;
-  height: 250px;
+  height: 200px;
   margin: 0;
+  border-radius: 100px;
+}
+
+#profile-img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 /* Register */
@@ -315,4 +362,24 @@ h2 {
 
 .login-form:first-child {
   margin-top: -5px;
+}
+
+/* Post dislike button */
+
+.reaction-img {
+  width: 20px;
+  padding: 0px;
+  padding-right: 10px;
+  margin: 0px;
+  color: #ff3838f3;
+}
+
+.reaction-button {
+  border: 1px solid black;
+  border-radius: 3px;
+  font-weight: bold;
+}
+.reaction-button:hover {
+  background-color: #ff3838f3;
+  cursor: pointer;
 }

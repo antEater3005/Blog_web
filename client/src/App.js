@@ -10,9 +10,14 @@ import { AuthContext } from './Contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Profile from './components/Profile';
+import PageNotFound from './components/PageNotFound';
 
 function App() {
-  const [authState, setAuthState] = useState(false);
+  const [authState, setAuthState] = useState({
+    userName: '',
+    id: 0,
+    status: false,
+  });
 
   useEffect(() => {
     axios
@@ -22,8 +27,13 @@ function App() {
         },
       })
       .then((res) => {
-        if (res.data.error) setAuthState(false);
-        else setAuthState(1);
+        if (res.data.error) setAuthState({ ...authState, status: false });
+        else
+          setAuthState({
+            userName: res.data.user.userName,
+            id: res.data.user.id,
+            status: true,
+          });
       });
   }, []);
   return (
@@ -43,6 +53,7 @@ function App() {
             <Route exact path='/login' element={<Login />} />
             <Route exact path='/register' element={<Register />} />
             <Route exact path='/profile' element={<Profile />} />
+            <Route exact path='*' element={<PageNotFound />} />
           </Routes>
         </Router>
       </AuthContext.Provider>

@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../Contexts/AuthContext';
+import avatar from '../images/user.png';
+
 function Navbar() {
   const { authState, setAuthState } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.clear('accessToken');
-    setAuthState(false);
+    setAuthState({ ...authState, status: false });
     navigate('/');
   };
   return (
@@ -17,7 +19,7 @@ function Navbar() {
       <Link className='nav-links' to='/createPost'>
         Create Post
       </Link>
-      {!authState && (
+      {!authState.status && (
         <>
           <Link className='nav-links' to='/login'>
             Login
@@ -27,16 +29,16 @@ function Navbar() {
           </Link>
         </>
       )}
-      {authState && (
+      {authState.status && (
         <>
           <button className='nav-logout-button' onClick={handleLogout}>
             Logout
           </button>
         </>
       )}
-      {authState && (
-        <Link className='profile-link' to='/profile'>
-          <img src='' alt='profile-pic' />
+      {authState.status && (
+        <Link className='profile-link' to='/profile' title={authState.userName}>
+          <img id='avatar-link' src={avatar} alt={authState.userName} />
         </Link>
       )}
     </div>

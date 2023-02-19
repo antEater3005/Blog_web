@@ -18,6 +18,7 @@ router.post('/', validateToken, async (req, res) => {
   post.author = req.validToken.userName;
   post.likes = 0;
   post.dislikes = 0;
+  post.UserId = req.validToken.id;
   await Posts.create(post);
   res.json(post);
 });
@@ -35,7 +36,7 @@ router.get('/user-posts', validateToken, async (req, res) => {
   const id = req.validToken.id;
   const numberOfPosts = await Posts.count({
     where: {
-      id: id,
+      UserId: id,
     },
   });
   res.json(numberOfPosts);
@@ -53,31 +54,30 @@ router.post('/likes', validateToken, async (req, res) => {
       PostId: postId,
     },
   });
+
+  const post = await Posts.findOne({
+    where: {
+      id: postId,
+    },
+  });
+
   if (reaction) {
-    if (reaction.like == isLike) res.json({ error: 'Already reacted!' });
+    if (reaction.like == isLike)
+      return res.json({ error: 'You have already reacted!' });
     else {
-      await PostLikes.update(
-        {
-          like: isLike,
-        },
-        {
-          where: {
-            id: reaction.id,
-          },
-        }
-      );
+      reaction.like = !reaction.like;
+      await reaction.save();
+
       if (isLike) {
-        await Posts.update(
-          {
-            likes: likes + 1,
-            dislikes: dislikes - 1,
-          },
-          {
-            where: {
-              id: reaction.id,
-            },
-          }
-        );
+        post.dislikes = post.dislikes - 1;
+        await post.save();
+        post.likes = post.likes + 1;
+        await post.save();
+      } else {
+        post.dislikes = post.dislikes + 1;
+        await post.save();
+        post.likes = post.likes - 1;
+        await post.save();
       }
     }
   } else {
@@ -87,8 +87,30 @@ router.post('/likes', validateToken, async (req, res) => {
       like: isLike,
     };
     await PostLikes.create(newReaction);
+    if (isLike) {
+      post.likes = post.likes + 1;
+      await post.save();
+    } else {
+      post.dislikes = post.dislikes + 1;
+      await post.save();
+    }
   }
-  res.json();
+  res.json(post);
+});
+
+// send back reaction
+
+router.get('/reaction/:id', validateToken, async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.validToken.id;
+  const reaction = await PostLikes.findOne({
+    where: {
+      PostId: postId,
+      userId: userId,
+    },
+  });
+  if (reaction) return res.json(reaction);
+  // return res.json({ error: 'Reaction does not exist!' });
 });
 
 module.exports = router;

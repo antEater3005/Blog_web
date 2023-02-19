@@ -2,8 +2,11 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
+  const navigate = useNavigate();
+
   const validationSchema = Yup.object().shape({
     name: Yup.string().min(4).max(20).required('Name is required!'),
     userName: Yup.string().min(4).max(20).required('Username is required!'),
@@ -26,9 +29,13 @@ function Register() {
   };
   const submit = (data, { resetForm }) => {
     axios.post('http://localhost:3001/auth/register', data).then((response) => {
-      alert(response.data.message);
-      console.log(data.image);
-      console.log(response.data);
+      if (response.data.error) {
+        alert(response.data.error);
+        navigate('/login');
+      } else {
+        alert(response.data.message);
+        console.log(response.data);
+      }
       resetForm();
     });
   };

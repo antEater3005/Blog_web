@@ -7,12 +7,27 @@ import CreateComment from './CreateComment';
 function Post() {
   let { id } = useParams();
   const [post, setPost] = useState({});
-  const [reaction, setReaction] = useState({});
+  const [reaction, setReaction] = useState(-1);
+  const [lColor, setLColor] = useState('#3d7aff00');
+  const [dColor, setDColor] = useState('#3d7aff00');
 
   useEffect(() => {
     axios.get(`http://localhost:3001/posts/post/${id}`).then((response) => {
       setPost(response.data);
     });
+    axios
+      .get(`http://localhost:3001/posts/reaction/${id}`, {
+        headers: {
+          accessToken: localStorage.getItem('accessToken'),
+        },
+      })
+      .then((res) => {
+        if (res.data.error) return;
+        if (res.data.like) {
+          setLColor('#3877fff3');
+        } else setDColor('#ff3838f3');
+        setReaction(res.data.like);
+      });
   }, [id]);
 
   const handleLikeChange = (isLike) => {
@@ -30,7 +45,8 @@ function Post() {
         }
       )
       .then((res) => {
-        setReaction(res.data);
+        if (res.data.error) alert(res.data.error);
+        else setPost(res.data);
       });
   };
 
@@ -43,21 +59,33 @@ function Post() {
           <div className='post-author'>{post.author}</div>
           <div className='likes-wrapper'>
             <button
+              style={{ backgroundColor: { lColor } }}
+              className='reaction-button'
               onClick={(e) => {
                 handleLikeChange(1);
               }}
             >
-              Like
+              <img
+                className='reaction-img'
+                src='https://www.freeiconspng.com/uploads/facebook-like-icon--3.png'
+                alt='Like'
+              />
+              {post.likes}
             </button>
-            <div className='post-Likes'>{post.likes}</div>
             <button
+              className='reaction-button'
+              style={{ dColor }}
               onClick={(e) => {
                 handleLikeChange(0);
               }}
             >
-              Dislike
+              <img
+                className='reaction-img'
+                src='https://www.freeiconspng.com/uploads/youtube-dislike-facebook-thumbs-down-not-like-png-16.png'
+                alt='dislike'
+              />
+              {post.dislikes}
             </button>
-            <div className='post-dislikes'>{post.dislikes}</div>
           </div>
         </div>
       </div>

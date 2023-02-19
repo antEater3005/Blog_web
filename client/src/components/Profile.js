@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Buffer } from 'buffer';
-
+import defaultAvatar from '../images/user.png';
 window.Buffer = Buffer;
 
 function Profile() {
@@ -39,13 +39,14 @@ function Profile() {
           <p>Name : {user.name}</p>
         </div>
         <div className='user-info-fields'>
-          <p>Date Of Joining : {user.join_date}</p>
+          <p>Registered : {user.join_date}</p>
         </div>
         <div className='user-info-fields'>
           <p>Number of Posts : {numberOfPosts}</p>
         </div>
       </div>
-      <div className='profile-image'> 
+      <div className='profile-image'>
+        <img id='profile-img' src={avatar ? avatar : defaultAvatar} alt='' />
       </div>
     </div>
   );

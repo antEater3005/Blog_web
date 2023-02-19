@@ -8,7 +8,7 @@ function Login() {
   const navigate = useNavigate();
 
   // Auth context
-  const { setAuthState } = useContext(AuthContext);
+  const { authState, setAuthState } = useContext(AuthContext);
 
   const validationSchema = Yup.object().shape({
     userName: Yup.string().min(4).max(20).required('Username is required!'),
@@ -19,7 +19,11 @@ function Login() {
       if (response.data.error) alert(response.data.error);
       else {
         localStorage.setItem('accessToken', response.data.accessToken);
-        setAuthState(1);
+        setAuthState({
+          userName: response.data.userName,
+          id: response.data.id,
+          status: true,
+        });
         alert(response.data.message);
         navigate('/');
       }

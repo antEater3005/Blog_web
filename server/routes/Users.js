@@ -13,7 +13,7 @@ router.post('/register', async (req, res) => {
   const { userName, Password, name, image, email } = req.body;
   const user = await Users.findOne({ where: { UserName: userName } });
   if (user) {
-    res.json({ message: 'User already exists!' });
+    res.json({ error: 'User already exist! Pls Login!' });
     return;
   }
   bcrypt
@@ -57,6 +57,8 @@ router.post('/login', async (req, res) => {
       res.json({
         message: 'You logged in successfully!',
         accessToken: accessToken,
+        userName: userName,
+        id: user.id,
       });
     })
     .catch(() => {});
@@ -65,7 +67,7 @@ router.post('/login', async (req, res) => {
 // to validate token so dummy tokens cannot be used
 
 router.get('/token-valid', validateToken, (req, res) => {
-  res.json(req.user);
+  res.json({ user: req.validToken });
 });
 
 // get user profile data
