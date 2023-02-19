@@ -113,4 +113,13 @@ router.get('/reaction/:id', validateToken, async (req, res) => {
   // return res.json({ error: 'Reaction does not exist!' });
 });
 
+// delete Post
+router.delete('/post/:id', validateToken, async (req, res) => {
+  const id = req.params.id;
+  await Posts.destroy({
+    where: { id: id },
+  });
+  res.json('Deleted');
+});
+
 module.exports = router;

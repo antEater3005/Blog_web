@@ -383,3 +383,31 @@ h2 {
   background-color: #ff3838f3;
   cursor: pointer;
 }
+
+/*  Delete Post Button */
+
+.post-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.post-header button {
+  width: 23px;
+  margin: 0px;
+  padding: 0px;
+  height: 23px;
+}
+
+.post-header img {
+  width: 20px;
+  margin: 0px;
+  padding: 0px;
+  height: 20px;
+}
+
+.post-header button:hover {
+  color: darkgray;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px 0px;
+}

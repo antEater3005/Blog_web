@@ -1,11 +1,15 @@
 import axios from 'axios';
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import Comment from '../components/Comment';
 import CreateComment from './CreateComment';
+import deletePNG from '../images/delete.png';
+import { AuthContext } from '../Contexts/AuthContext';
 function Post() {
   let { id } = useParams();
+  const navigate = useNavigate();
+  const { authState } = useContext(AuthContext);
   const [post, setPost] = useState({});
   const [reaction, setReaction] = useState(-1);
   const [lColor, setLColor] = useState('#3d7aff00');
@@ -49,11 +53,34 @@ function Post() {
         else setPost(res.data);
       });
   };
+  const handleDeletePost = (id) => {
+    axios
+      .delete(`http://localhost:3001/posts/post/${id}`, {
+        headers: {
+          accessToken: localStorage.getItem('accessToken'),
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        navigate('/');
+      });
+  };
 
   return (
     <div className='post-page'>
       <div className='single-post'>
-        <h1>{post.title}</h1>
+        <div className='post-header'>
+          <h1>{post.title}</h1>
+          {authState.status && authState.userName === post.author && (
+            <button
+              onClick={() => {
+                handleDeletePost(id);
+              }}
+            >
+              <img src={deletePNG} alt='Delete_Post' />
+            </button>
+          )}
+        </div>
         <div id='post-content'>{post.content}</div>
         <div id='post-footer'>
           <div className='post-author'>{post.author}</div>
