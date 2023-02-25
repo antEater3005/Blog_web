@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import Webcam from 'react-webcam';
 
 function Register() {
   const navigate = useNavigate();
@@ -19,26 +20,59 @@ function Register() {
       ),
     }),
   });
+
+  const encodeFileBase64 = (file) => {
+    var reader = new FileReader();
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        var base64 = reader.result;
+        // console.log('hello', base64);
+        setImage(base64);
+        // console.log(image);
+      };
+      reader.onerror = (error) => {
+        console.log('Error', error);
+      };
+    }
+  };
+  // states
+  const [image, setImage] = useState('');
+  const [image_size_ok, set_image_size_ok] = useState(1);
+  const [isCamera, setCamera] = useState(1);
   const initialValues = {
     userName: '',
     Password: '',
     ConfirmPassword: '',
     name: '',
     email: '',
-    image: '',
   };
+  //submit form for register
   const submit = (data, { resetForm }) => {
-    axios.post('http://localhost:3001/auth/register', data).then((response) => {
-      if (response.data.error) {
-        alert(response.data.error);
+    axios
+      .post('http://localhost:3001/auth/register', { data, image })
+      .then((response) => {
+        if (response.data.error) {
+          alert(response.data.error);
+        } else {
+          alert(response.data.message);
+          console.log(response.data);
+        }
         navigate('/login');
-      } else {
-        alert(response.data.message);
-        console.log(response.data);
-      }
-      resetForm();
-    });
+      });
   };
+
+  // store image from camera
+  const webRef = useRef(null);
+  const click_image = () => {
+    setImage(webRef.current.getScreenshot());
+    toggleCamera();
+  };
+
+  const toggleCamera = () => {
+    setCamera(!isCamera);
+  };
+
   return (
     <div className='login-page'>
       <Formik
@@ -97,16 +131,59 @@ function Register() {
             placeholder='Brad@xyz.com'
           />
           <label id='register-form-image'>Profile Pic:</label>
-          <Field
-            id='register-form-image'
-            name='image'
-            type='file'
-            accept='image/*'
-            // onChange={(e) => {
-            //   console.log(e.values.image)
-            // }}
-          />
-          <button type='submit' disabled={Formik.isSubmitting}>
+          <div className='profile-pic-input'>
+            {isCamera && (
+              <input
+                id='register-form-image'
+                name='image'
+                type='file'
+                accept='image/*'
+                onChange={(e) => {
+                  encodeFileBase64(e.target.files[0]);
+                  const fileSize = e.target.files[0].size;
+                  // console.log(fileSize);
+                  if (fileSize > 200000) {
+                    alert('image should be less than 200kB');
+                    set_image_size_ok(0);
+                  } else {
+                    set_image_size_ok(1);
+                  }
+                }}
+              />
+            )}
+
+            <button
+              type='button'
+              id='camera-toggle-button'
+              onClick={() => {
+                toggleCamera();
+              }}
+            >
+              {isCamera ? 'Camera' : 'Choose file'}
+            </button>
+
+            {!isCamera && (
+              <div className='camera-click'>
+                <button
+                  type='button'
+                  id='camera-click-button'
+                  onClick={() => {
+                    click_image();
+                  }}
+                >
+                  click
+                </button>
+                <Webcam className='webCam' ref={webRef} />
+              </div>
+            )}
+          </div>
+          {image && isCamera && (
+            <img id='show-profile-pic' src={image} alt='profile_pic' />
+          )}
+          <button
+            type='submit'
+            disabled={Formik.isSubmitting || !image_size_ok}
+          >
             Register
           </button>
         </Form>

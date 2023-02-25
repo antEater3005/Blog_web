@@ -10,8 +10,7 @@ function Post() {
   let { id } = useParams();
   const navigate = useNavigate();
   const { authState } = useContext(AuthContext);
-  const [post, setPost] = useState({});
-  const [reaction, setReaction] = useState(-1);
+  const [post, setPost] = useState({}); 
   const [lColor, setLColor] = useState('#3d7aff00');
   const [dColor, setDColor] = useState('#3d7aff00');
 
@@ -29,8 +28,7 @@ function Post() {
         if (res.data.error) return;
         if (res.data.like) {
           setLColor('#3877fff3');
-        } else setDColor('#ff3838f3');
-        setReaction(res.data.like);
+        } else setDColor('#ff3838f3'); 
       });
   }, [id]);
 

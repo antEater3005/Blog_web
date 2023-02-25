@@ -13,9 +13,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    image: {
-      type: DataTypes.BLOB('long'),
-    },
     email: {
       type: DataTypes.STRING,
     },
@@ -28,6 +25,12 @@ module.exports = (sequelize, DataTypes) => {
     Users.hasMany(models.Posts, {
       onDelete: 'cascade',
     });
+
+    Users.associate = (models) => {
+      Users.hasOne(models.Profile_Pictures, {
+        onDelete: 'cascade',
+      });
+    };
   };
   return Users;
 };

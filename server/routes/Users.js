@@ -5,12 +5,13 @@ const bcrypt = require('bcrypt');
 const { sign } = require('jsonwebtoken');
 
 const { validateToken } = require('../middleWare/AuthMiddleWare');
-const { route } = require('./Comments');
-const { where } = require('sequelize');
+const { Profile_Pictures } = require('../models');
 
 // register
 router.post('/register', async (req, res) => {
-  const { userName, Password, name, image, email } = req.body;
+  const { data, image } = req.body;
+  const { userName, Password, name, email } = data;
+  // console.log(image);
   const user = await Users.findOne({ where: { UserName: userName } });
   if (user) {
     res.json({ error: 'User already exist! Pls Login!' });
@@ -24,12 +25,12 @@ router.post('/register', async (req, res) => {
         Password: hash,
         name: name,
         email: email,
-        image: image,
       });
+      if (image) Profile_Pictures.create({ image: image, userName: userName });
       res.json({ message: 'Registered successfully!' });
     })
     .catch((error) => {
-      res.json(error);
+      res.json({ error: 'error' });
     });
 });
 
@@ -75,11 +76,14 @@ router.get('/token-valid', validateToken, (req, res) => {
 router.get('/user', validateToken, async (req, res) => {
   const id = req.validToken.id;
   const user = await Users.findOne({ where: { id: id } });
+  const image = await Profile_Pictures.findOne({
+    where: { userName: user.userName },
+  });
   const data = {
     userName: user.userName,
     name: user.name,
     join_date: user.createdAt,
-    image: user.image,
+    image: image.image,
   };
   res.json(data);
 });

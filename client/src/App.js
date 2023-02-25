@@ -35,7 +35,7 @@ function App() {
             status: true,
           });
       });
-  }, []);
+  },[]);
   return (
     <div className='App'>
       <AuthContext.Provider
